@@ -1,0 +1,127 @@
+workspace "Jhon Alexander Villarroel Segovia - Software Design & Patterns - C4 Model - Sistema de Monitoreo - 2025-10" {
+    model {
+        # People
+        admin = person "Admin" "Realiza consultas para mantenerse al tanto de la planificación de los vuelos hasta la llegada del lote de vacunas al Perú."
+        student = person "Ciudadano" " Realiza consultas para mantenerse al tanto de la planificación de los vuelos hasta la llegada del lote de vacunas al Perú."
+
+        # Software System
+        learningCenter1 = softwareSystem "Google Maps" " Plataforma que ofrece una REST API de información geo referencial."
+        learningCenter2 = softwareSystem "Aircraft System" " Permite transmitir información en tiempo real del vuelo de la aeronave al nuestro sistema."
+        learningCenter = softwareSystem "Monitoreo del Traslado Aéreo de Vacunas SARS-CoV-2" "Permite el seguimiento y monitoreo del traslado aéreo a nuestro país de las vacunas para la COVID-19." {
+
+        # Containers
+        webApplication = container "Landing Page "" "React"
+        webApplication1 = container "Mobile App" " Permite a los usuarios visualizar la información en su dispositivo móvil, facilitando el consumo y consulta del traslado en tiempo real de las vacunas." "React"
+        webApplication2 = container "Web App" " Permite a los usuarios visualizar un dashboard con información detallada de la información del traslado de las lotes de las vacunas." "React"
+        webApplication3 = container "Google Maps" " Plataforma que ofrece una REST API de información geo referencial."
+        webApplication4 = container "Aircraft System" " Permite transmitir información en tiempo real del vuelo de la aeronave al nuestro sistema."
+        
+     
+
+        apiApplication = container "API Application" "API REST" "NodeJS (NestJS), port 8080" "api" {
+            tags "API"
+            iam = component "Interface Layer Aircrafts" " " "NodeJS (NestJS)"
+            learning = component "Application Layer Aircrafts" "  "NodeJS (NestJS)"
+            profiles = component "Infrastructure Layer Aircrafts" " " "NodeJS (NestJS)"
+            shared = component "Domain Layer Aircrafts" " " "NodeJS (NestJS)"
+        }
+
+        database = container "DB" "" "MySQL Server RDS AWS" {
+            tags "Database"
+        }
+        
+       
+    }
+
+    # Relationships between people and system
+    admin -> learningCenter "Realiza consultas para mantenerse al tanto de la planificación de los vuelos hasta la llegada del lote de vacunas al Perú."
+    student -> learningCenter "Realiza consultas para mantenerse al tanto de la planificación de los vuelos hasta la llegada del lote de vacunas al Perú."
+
+    learningCenter -> learningCenter1 "Usa la API de google maps."
+    learningCenter -> learningCenter2 "Consulta información en tiempo real por el avión del vuelo."
+
+
+    # Relationships between containers
+    admin -> webApplication "Consulta"
+    admin -> webApplication1 "Consulta"
+    admin -> webApplication2 "Consulta"
+
+    student -> webApplication "Consulta"
+    student -> webApplication1 "Consulta"
+    student -> webApplication2 "Consulta"
+
+    webApplication1 -> apiApplication " API Request (POST/GET)"
+    webApplication2 -> apiApplication " API Request (POST/GET)"
+
+    apiApplication -> database " "
+    
+    apiApplication -> webApplication3 "API Request (GET/POST)"
+    apiApplication -> webApplication4 "API Request (GET/POST)"
+
+    
+
+    # Component-level relationships (within API Application)
+    iam -> learning " "
+    learning -> profiles " "
+    learning -> shared " "
+    profiles -> shared " "
+    profiles -> database "usa"
+
+
+    # Show App-Component relationships
+
+    }
+
+    views {
+        systemContext learningCenter "SystemContext" "The system context diagram for the Learning Center" {
+        include *
+        autoLayout lr
+    }
+
+    container learningCenter "Containers" "The container diagram for the Learning Center" {
+        include *
+        autoLayout lr
+    }
+
+    component apiApplication "Components" {
+        include *
+        autoLayout
+    }
+
+    styles {
+        element "Person" {
+        shape "Person"
+        background "#08427b"
+        color "#f1f1f1"
+        }
+        element "Software System" {
+        background "#1168bd"
+        color "#ffffff"
+        }
+        element "Container" {
+        background "#438dd5"
+        color "#ffffff"
+        }
+        element "Web Browser" {
+        shape "WebBrowser"
+        background "#438dd5"
+        color "#ffffff"
+        }
+        element "API" {
+        background "#438dd5"
+        color "#ffffff"
+        }
+        element "Database" {
+        shape "Cylinder"
+        background "#438dd5"
+        color "#ffffff"
+        }
+    }
+
+    theme default
+    }
+
+    properties {
+        structurizr.groupSeparator "/"
+    }
+}
